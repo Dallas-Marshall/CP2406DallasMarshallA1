@@ -5,13 +5,16 @@ import textio.TextIO;
 public class RainfallAnalyser {
     public static void main(String[] args) {
         // TODO: add your solution code here
-        System.out.println("please enter the path to the file: ");
-        String filename = TextIO.getln();
-//        String filename = "resources/MountSheridanStationCNS.csv";
-        TextIO.readFile(filename);
+//        System.out.println("please enter the path to the file: ");
+//        String filename = TextIO.getln();
+        String inFile = "resources/MountSheridanStationCNS.csv";
+        TextIO.readFile(inFile);
         TextIO.getln(); // remove header record
 
-//        create record file to save in
+//        create outFile
+        String fileName = inFile.substring(inFile.lastIndexOf("/") + 1, inFile.indexOf("."));
+        String outFile = "resources/" + fileName + "_analysed.csv";
+        TextIO.writeFile(outFile);
 
         double monthlyRainfallSum = 0;
         while (!TextIO.eof()) {
