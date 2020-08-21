@@ -5,16 +5,26 @@ import textio.TextIO;
 public class RainfallAnalyser {
     public static void main(String[] args) {
         // TODO: add your solution code here
-//        System.out.println("please enter the path to the file: ");
-//        String filename = TextIO.getln();
-        String inFile = "resources/MountSheridanStationCNS.csv";
-        TextIO.readFile(inFile);
-        TextIO.getln(); // remove header record
+        System.out.print("Enter path name: ");
+        String inFile = TextIO.getln();
+
+        try {
+            TextIO.readFile(inFile);
+        } catch (IllegalArgumentException e) { // file does not exist
+            System.out.println("ERROR: An error occurred during runtime, failed to process file.");
+        }
+
+        try { // remove header record
+            TextIO.getln();
+        } catch (IllegalArgumentException e) {  // file is empty
+            System.out.println("ERROR: An error occurred during runtime, file is empty.");
+        }
 
 //        create outFile
-        String fileName = inFile.substring(inFile.lastIndexOf("/") + 1, inFile.indexOf("."));
+        String fileName = inFile.substring(inFile.lastIndexOf("/") + 1, inFile.lastIndexOf("."));
         String outFile = "resources/" + fileName + "_analysed.csv";
         TextIO.writeFile(outFile);
+        TextIO.putln("year,month,total,min,max");
 
         double monthlyRainfallSum = 0;
         double monthlyRainfallMin = 0;
@@ -28,19 +38,19 @@ public class RainfallAnalyser {
 
 //            check valid data lines
             if (lineSplit.length <= 5) { // data line missing necessary information
-                System.out.println("Error: Data line too short, Discarding!");
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Data Line)");
                 continue;
             }
             if (lineSplit[2].length() != 4) { // invalid year
-                System.out.println("Error: Invalid Year, Discarding data line!");
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Year)");
                 continue;
             }
             if (lineSplit[3].equals("") || lineSplit[4].equals("")) { // missing date values
-                System.out.println("Error: Invalid Month/Day, Discarding the data line!");
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Month/Day)");
                 continue;
             }
 
-//            replace empty rainfall amount readings with 0.0
+//            replace blank rainfall readings with 0.0
             if (lineSplit[5].equals("")) {
                 lineSplit[5] = String.valueOf(0.0);
             }
@@ -49,32 +59,32 @@ public class RainfallAnalyser {
             int month = Integer.parseInt(lineSplit[3]);
             double rainfallMeasurement = Double.parseDouble(lineSplit[5]);
 
-            if (readingsProcessed == 0) {
+            if (readingsProcessed == 0) { // set values on first iteration to current values
                 previousMonth = month;
                 monthlyRainfallMin = rainfallMeasurement;
                 monthlyRainfallMax = rainfallMeasurement;
             }
-//            TODO: Save month details to file
 
-//           check if in same month
+//            calculate values
             if (month == previousMonth) {
                 monthlyRainfallSum += rainfallMeasurement;
+
                 if (rainfallMeasurement > monthlyRainfallMax) {
                     monthlyRainfallMax = rainfallMeasurement;
+
                 } else if (rainfallMeasurement < monthlyRainfallMin) {
                     monthlyRainfallMin = rainfallMeasurement;
                 }
             } else {
-//                adjust year if in new year
                 int yearToPrint;
                 if (previousMonth == 12) {
-                    yearToPrint = year - 1;
+                    yearToPrint = year - 1; // adjust year if in new year
                 } else {
                     yearToPrint = year;
                 }
 //                System.out.printf("%d\\%d - Total: %1.2f, Max: %1.2f, Min:%1.2f\n", previousMonth, yearToPrint, monthlyRainfallSum, monthlyRainfallMax, monthlyRainfallMin);
 
-//                update variables for new month
+//                reset variables for new month
                 monthlyRainfallSum = rainfallMeasurement;
                 monthlyRainfallMin = rainfallMeasurement;
                 monthlyRainfallMax = rainfallMeasurement;
