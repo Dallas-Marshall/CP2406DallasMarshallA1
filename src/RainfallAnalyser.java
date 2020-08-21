@@ -17,6 +17,11 @@ public class RainfallAnalyser {
         TextIO.writeFile(outFile);
 
         double monthlyRainfallSum = 0;
+        double monthlyRainfallMin = 0;
+        double monthlyRainfallMax = 0;
+        int readingsProcessed = 0;
+        int previousMonth = 1;
+
         while (!TextIO.eof()) {
             String line = TextIO.getln();
             String[] lineSplit = line.split(",", -1);
@@ -37,32 +42,50 @@ public class RainfallAnalyser {
 
 //            replace empty rainfall amount readings with 0.0
             if (lineSplit[5].equals("")) {
-//                System.out.println("No rain measurement, Replaced with 0,0");
                 lineSplit[5] = String.valueOf(0.0);
             }
 
             int year = Integer.parseInt(lineSplit[2]);
             int month = Integer.parseInt(lineSplit[3]);
-            int day = Integer.parseInt(lineSplit[4]);
             double rainfallMeasurement = Double.parseDouble(lineSplit[5]);
 
-//            check if in new month
-            if (day != 1) {
+            if (readingsProcessed == 0) {
+                previousMonth = month;
+                monthlyRainfallMin = rainfallMeasurement;
+                monthlyRainfallMax = rainfallMeasurement;
+            }
+//            TODO: Save month details to file
+
+//           check if in same month
+            if (month == previousMonth) {
                 monthlyRainfallSum += rainfallMeasurement;
-//                monthDayCount++;
+                if (rainfallMeasurement > monthlyRainfallMax) {
+                    monthlyRainfallMax = rainfallMeasurement;
+                } else if (rainfallMeasurement < monthlyRainfallMin) {
+                    monthlyRainfallMin = rainfallMeasurement;
+                }
             } else {
-//                calculate min max
-//                create identifying information for record
-//                Save month details to file
-                System.out.printf("%1.2f \n", monthlyRainfallSum);
+//                adjust year if in new year
+                int yearToPrint;
+                if (previousMonth == 12) {
+                    yearToPrint = year - 1;
+                } else {
+                    yearToPrint = year;
+                }
+//                System.out.printf("%d\\%d - Total: %1.2f, Max: %1.2f, Min:%1.2f\n", previousMonth, yearToPrint, monthlyRainfallSum, monthlyRainfallMax, monthlyRainfallMin);
+
+//                update variables for new month
                 monthlyRainfallSum = rainfallMeasurement;
-//                monthDayCount = 1;
+                monthlyRainfallMin = rainfallMeasurement;
+                monthlyRainfallMax = rainfallMeasurement;
+                previousMonth = month;
             }
-            if (TextIO.eof()) { // data ends halfway through month
-                System.out.printf("%1.2f \n", monthlyRainfallSum);
+
+            if (TextIO.eof()) { // if data ends halfway through month print
+//                System.out.printf("%d\\%d - Total: %1.2f, Max: %1.2f, Min:%1.2f\n", month, year, monthlyRainfallSum, monthlyRainfallMax, monthlyRainfallMin);
             }
+            readingsProcessed++;
         }
     }
-
-    // TODO: consider using static methods
+// TODO: consider using static methods
 }
