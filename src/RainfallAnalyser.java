@@ -82,7 +82,7 @@ public class RainfallAnalyser {
                 } else {
                     yearToPrint = year;
                 }
-//                System.out.printf("%d\\%d - Total: %1.2f, Max: %1.2f, Min:%1.2f\n", previousMonth, yearToPrint, monthlyRainfallSum, monthlyRainfallMax, monthlyRainfallMin);
+                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", previousMonth, yearToPrint, monthlyRainfallSum, monthlyRainfallMin, monthlyRainfallMax);
 
 //                reset variables for new month
                 monthlyRainfallSum = rainfallMeasurement;
@@ -92,7 +92,7 @@ public class RainfallAnalyser {
             }
 
             if (TextIO.eof()) { // if data ends halfway through month print
-//                System.out.printf("%d\\%d - Total: %1.2f, Max: %1.2f, Min:%1.2f\n", month, year, monthlyRainfallSum, monthlyRainfallMax, monthlyRainfallMin);
+                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", previousMonth, year, monthlyRainfallSum, monthlyRainfallMin, monthlyRainfallMax);
             }
             readingsProcessed++;
         }
