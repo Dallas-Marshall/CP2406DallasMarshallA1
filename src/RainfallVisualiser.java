@@ -42,6 +42,7 @@ public class RainfallVisualiser extends Application {
         TextIO.getln(); // remove header record
 
         int currentValueX = startingValueX; // start graphing inside axis
+        double maxRecordedRainfall = 0;
         int yearsGraphed = 0;
         while (!TextIO.eof()) {
             String line = TextIO.getln();
@@ -49,8 +50,11 @@ public class RainfallVisualiser extends Application {
 
             int year = Integer.parseInt(lineSplit[INDEX_OF_YEAR]);
             int month = Integer.parseInt(lineSplit[INDEX_OF_MONTH]);
-            double monthlyRainfallSum = Double.parseDouble(lineSplit[INDEX_OF_RAINFALL_TOTAL]);
-            monthlyRainfallSum = monthlyRainfallSum / 4; // scale down to fit larger totals
+            double monthlyRainfallTotal = Double.parseDouble(lineSplit[INDEX_OF_RAINFALL_TOTAL]);
+            monthlyRainfallTotal = monthlyRainfallTotal / 4; // scale down to fit larger totals
+            if (monthlyRainfallTotal > maxRecordedRainfall) {
+                maxRecordedRainfall = monthlyRainfallTotal;
+            }
 
 //            alternate bar colours per year
             if (month == 1) {
@@ -62,8 +66,16 @@ public class RainfallVisualiser extends Application {
                 }
                 g.strokeText("| " + year, currentValueX, X_AXIS_HEIGHT + 10, 50);
             }
-            g.fillRect(currentValueX, X_AXIS_HEIGHT - monthlyRainfallSum, 4, monthlyRainfallSum);
+            g.fillRect(currentValueX, X_AXIS_HEIGHT - monthlyRainfallTotal, 4, monthlyRainfallTotal);
             currentValueX += 5; // move x coordinate across for each new bar
+        }
+
+        int rainfallLabelValueInterval = (int) (maxRecordedRainfall / 10);
+        int rainfallLabelHeightInterval = (435) / 10; // y axis height / 10
+        for (int i = 0; i <= 10; i++) {
+            int rainfallLabelValue = rainfallLabelValueInterval * i;
+            int rainfallHeightValue = rainfallLabelHeightInterval * i;
+            g.strokeText(rainfallLabelValue + " -", 95, height - 40 - rainfallHeightValue, 75);
         }
     } // end drawPicture()
 
