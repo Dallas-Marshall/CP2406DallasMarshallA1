@@ -25,6 +25,7 @@ public class RainfallVisualiser extends Application {
         g.setFill(Color.WHITE);
         g.fillRect(0, 0, width, height);
 
+        g.setFont(new Font("Arial", 10));
         int INDEX_OF_YEAR = 0;
         int INDEX_OF_MONTH = 1;
         int INDEX_OF_RAINFALL_TOTAL = 2;
@@ -34,9 +35,9 @@ public class RainfallVisualiser extends Application {
 //        create axis
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, width - 25, X_AXIS_HEIGHT);
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, startingValueX, 25);
-        g.strokeText("Year", (width / 2.0), height - 10, 25);
-        g.strokeText("Rainfall (mL)", 10, (height / 2.0), 60);
-        g.strokeText("Monthly Rainfall Totals per Year", (width / 2.0 - 30),  20, 125);
+        g.strokeText("Year", (width / 2.0), height - 10, 50);
+        g.strokeText("Rainfall (mL)", 10, (height / 2.0), 75);
+        g.strokeText("Monthly Rainfall Totals per Year", (width / 2.0 - 30), 20, 200);
 
         TextIO.getln(); // remove header record
 
@@ -59,6 +60,7 @@ public class RainfallVisualiser extends Application {
                 } else {
                     g.setFill(Color.RED);
                 }
+                g.strokeText("| " + year, currentValueX, X_AXIS_HEIGHT + 10, 50);
             }
             g.fillRect(currentValueX, X_AXIS_HEIGHT - monthlyRainfallSum, 4, monthlyRainfallSum);
             currentValueX += 5; // move x coordinate across for each new bar
