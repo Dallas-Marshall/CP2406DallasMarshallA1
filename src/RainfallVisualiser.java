@@ -20,7 +20,11 @@ public class RainfallVisualiser extends Application {
      * of the drawing area, in pixels.
      */
     public void drawPicture(GraphicsContext g, int width, int height) {
+
         // TODO: draw the x-axis and y-axis
+        g.strokeLine(125, height - 50, width - 25, height - 50);
+        g.strokeLine(125, height - 50, 125, 25);
+
         // TODO: draw the monthly totals as a bar chart
     } // end drawPicture()
 
