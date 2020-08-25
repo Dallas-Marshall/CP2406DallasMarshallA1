@@ -26,7 +26,12 @@ public class RainfallAnalyser {
         TextIO.writeFile(outFile);
         TextIO.putln("year,month,total,min,max");
 
-        double monthlyRainfallSum = 0;
+        int INDEX_OF_YEAR = 2;
+        int INDEX_OF_MONTH = 3;
+        int INDEX_OF_DAY = 4;
+        int INDEX_OF_RAINFALL_MEASUREMENT = 5;
+
+        double monthlyRainfallTotal = 0;
         double monthlyRainfallMin = 0;
         double monthlyRainfallMax = 0;
         int readingsProcessed = 0;
@@ -41,23 +46,23 @@ public class RainfallAnalyser {
                 System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Data Line)");
                 continue;
             }
-            if (lineSplit[2].length() != 4) { // invalid year
+            if (lineSplit[INDEX_OF_YEAR].length() != 4) { // invalid year
                 System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Year)");
                 continue;
             }
-            if (lineSplit[3].equals("") || lineSplit[4].equals("")) { // missing date values
+            if (lineSplit[INDEX_OF_MONTH].equals("") || lineSplit[INDEX_OF_DAY].equals("")) { // missing date values
                 System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Month/Day)");
                 continue;
             }
 
 //            replace blank rainfall readings with 0.0
-            if (lineSplit[5].equals("")) {
-                lineSplit[5] = String.valueOf(0.0);
+            if (lineSplit[INDEX_OF_RAINFALL_MEASUREMENT].equals("")) {
+                lineSplit[INDEX_OF_RAINFALL_MEASUREMENT] = String.valueOf(0.0);
             }
 
-            int year = Integer.parseInt(lineSplit[2]);
-            int month = Integer.parseInt(lineSplit[3]);
-            double rainfallMeasurement = Double.parseDouble(lineSplit[5]);
+            int year = Integer.parseInt(lineSplit[INDEX_OF_YEAR]);
+            int month = Integer.parseInt(lineSplit[INDEX_OF_MONTH]);
+            double rainfallMeasurement = Double.parseDouble(lineSplit[INDEX_OF_RAINFALL_MEASUREMENT]);
 
             if (readingsProcessed == 0) { // set values on first iteration to current values
                 previousMonth = month;
@@ -67,7 +72,7 @@ public class RainfallAnalyser {
 
 //            calculate values
             if (month == previousMonth) {
-                monthlyRainfallSum += rainfallMeasurement;
+                monthlyRainfallTotal += rainfallMeasurement;
 
                 if (rainfallMeasurement > monthlyRainfallMax) {
                     monthlyRainfallMax = rainfallMeasurement;
@@ -82,17 +87,17 @@ public class RainfallAnalyser {
                 } else {
                     yearToPrint = year;
                 }
-                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", previousMonth, yearToPrint, monthlyRainfallSum, monthlyRainfallMin, monthlyRainfallMax);
+                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", yearToPrint, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
 
 //                reset variables for new month
-                monthlyRainfallSum = rainfallMeasurement;
+                monthlyRainfallTotal = rainfallMeasurement;
                 monthlyRainfallMin = rainfallMeasurement;
                 monthlyRainfallMax = rainfallMeasurement;
                 previousMonth = month;
             }
 
             if (TextIO.eof()) { // if data ends halfway through month print
-                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", previousMonth, year, monthlyRainfallSum, monthlyRainfallMin, monthlyRainfallMax);
+                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", year, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
             }
             readingsProcessed++;
         }
