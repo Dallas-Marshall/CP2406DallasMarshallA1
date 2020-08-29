@@ -42,7 +42,14 @@ public class RainfallAnalyser {
             String line = TextIO.getln();
             String[] lineSplit = line.split(",", -1);
 
-            if (!isValidDataLine(lineSplit)) {
+            if (!isValidYear(lineSplit)) {
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Year)");
+                continue;
+            } else if (!isValidMonth(lineSplit)) {
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Month)");
+                continue;
+            } else if (!isValidDay(lineSplit)) {
+                System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Day)");
                 continue;
             }
 
@@ -87,28 +94,41 @@ public class RainfallAnalyser {
                 previousMonth = month;
             }
 
-            if (TextIO.eof()) { // if data ends halfway through month print
+            if (TextIO.eof()) { // print last month of data
                 TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", year, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
             }
             readingsProcessed++;
         }
     } // end main
 
-    static boolean isValidDataLine(String[] lineSplit) {
-        boolean isValidLine = true;
-        if (lineSplit.length <= 5) { // data line missing necessary information
-            System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Data Line)");
-            isValidLine = false;
+    static boolean isValidYear(String[] lineSplit) {
+        boolean isValidYear = true;
+        if (lineSplit.length < 3) {
+            isValidYear = false;
+        } else if (lineSplit[INDEX_OF_YEAR].length() != 4) {
+            isValidYear = false;
         }
-        if (lineSplit[INDEX_OF_YEAR].length() != 4) { // invalid year
-            System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Year)");
-            isValidLine = false;
+        return isValidYear;
+    } // end isValidYear
+
+    static boolean isValidMonth(String[] lineSplit) {
+        boolean isValidMonth = true;
+        if (lineSplit.length < 4) {
+            isValidMonth = false;
+        } else if (Integer.parseInt(lineSplit[INDEX_OF_MONTH]) <= 0) {
+            isValidMonth = false;
         }
-        if (lineSplit[INDEX_OF_MONTH].equals("") || lineSplit[INDEX_OF_DAY].equals("")) { // missing date values
-            System.out.println("ERROR: An error occurred during runtime, failed to process file. (Invalid Month/Day)");
-            isValidLine = false;
+        return isValidMonth;
+    } // end IsValidMonth
+
+    static boolean isValidDay(String[] lineSplit) {
+        boolean isValidMonth = true;
+        if (lineSplit.length < 5) {
+            isValidMonth = false;
+        } else if (Integer.parseInt(lineSplit[INDEX_OF_DAY]) <= 0) {
+            isValidMonth = false;
         }
-        return isValidLine;
-    } // end isValidDataLine
+        return isValidMonth;
+    } // end isValidDay
 
 } // end class RainfallAnalyser
