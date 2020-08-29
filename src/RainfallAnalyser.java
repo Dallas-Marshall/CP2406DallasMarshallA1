@@ -12,32 +12,16 @@ public class RainfallAnalyser {
     public static void main(String[] args) {
 
         System.out.print("Enter path name: ");
-        String inFile = TextIO.getln();
+        String pathToInFile = TextIO.getln();
 
-        try {
-            TextIO.readFile(inFile);
-        } catch (IllegalArgumentException e) { // file does not exist
-            System.out.println("ERROR: An error occurred during runtime, failed to process file.");
-        }
-
-        try { // ignore header record
-            TextIO.getln();
-        } catch (IllegalArgumentException e) {  // file is empty
-            System.out.println("ERROR: An error occurred during runtime, file is empty.");
-        }
-
-        // calculate outFile name and write header data
-        String fileName = inFile.substring(inFile.lastIndexOf("/") + 1, inFile.lastIndexOf("."));
-        String outFile = "resources/" + fileName + "_analysed.csv";
-        TextIO.writeFile(outFile);
-        TextIO.putln("year,month,total,min,max");
+        readInFile(pathToInFile);
+        initialiseOutFile(pathToInFile);
 
         double monthlyRainfallTotal = 0;
         double monthlyRainfallMin = 0;
         double monthlyRainfallMax = 0;
         int readingsProcessed = 0;
         int previousMonth = 1;
-
         while (!TextIO.eof()) {
             String line = TextIO.getln();
             String[] lineSplit = line.split(",", -1);
@@ -79,13 +63,13 @@ public class RainfallAnalyser {
                     monthlyRainfallMin = rainfallMeasurement;
                 }
             } else {
-                int yearToPrint;
+                int previousYear;
                 if (previousMonth == 12) {
-                    yearToPrint = year - 1; // adjust year if in new year
+                    previousYear = year - 1; // adjust year if in new year
                 } else {
-                    yearToPrint = year;
+                    previousYear = year;
                 }
-                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", yearToPrint, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
+                printToFile(previousYear, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
 
                 // reset variables for new month
                 monthlyRainfallTotal = rainfallMeasurement;
@@ -95,11 +79,36 @@ public class RainfallAnalyser {
             }
 
             if (TextIO.eof()) { // print last month of data
-                TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", year, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
+                printToFile(year, previousMonth, monthlyRainfallTotal, monthlyRainfallMin, monthlyRainfallMax);
             }
             readingsProcessed++;
         }
     } // end main
+
+    static void initialiseOutFile(String nameOfInFile) {
+        String fileName = nameOfInFile.substring(nameOfInFile.lastIndexOf("/") + 1, nameOfInFile.lastIndexOf("."));
+        String pathToOutFile = "resources/" + fileName + "_analysed.csv";
+        TextIO.writeFile(pathToOutFile);
+        TextIO.putln("year,month,total,min,max");
+    }
+
+    static void readInFile(String inFile) {
+        try {
+            TextIO.readFile(inFile);
+        } catch (IllegalArgumentException e) { // file does not exist
+            System.out.println("ERROR: An error occurred during runtime, failed to process file.");
+        }
+
+        try { // ignore header record
+            TextIO.getln();
+        } catch (IllegalArgumentException e) {  // file is empty
+            System.out.println("ERROR: An error occurred during runtime, file is empty.");
+        }
+    }
+
+    static void printToFile(int year, int month, double rainfallTotal, double rainfallMin, double rainfallMax) {
+        TextIO.putf("%d,%d,%1.2f,%1.2f,%1.2f\n", year, month, rainfallTotal, rainfallMin, rainfallMax);
+    }
 
     static boolean isValidYear(String[] lineSplit) {
         boolean isValidYear = true;
