@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,7 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import textio.TextIO;
-import javafx.scene.control.Label;
 
 /**
  * This file can be used to draw a chart that effectively represents rainfall data.  Just fill in
@@ -32,14 +30,14 @@ public class RainfallVisualiser extends Application {
         int X_AXIS_HEIGHT = height - 40;
         int startingValueX = 125;
 
-//        create axis
+        // draw and label x and y axis
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, width - 25, X_AXIS_HEIGHT);
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, startingValueX, 25);
         g.strokeText("Year", (width / 2.0), height - 10, 50);
         g.strokeText("Rainfall (mL)", 10, (height / 2.0), 75);
         g.strokeText("Monthly Rainfall Totals per Year", (width / 2.0 - 30), 20, 200);
 
-        TextIO.getln(); // remove header record
+        TextIO.getln(); // ignore header record
 
         int currentValueX = startingValueX; // start graphing inside axis
         double maxRecordedRainfall = 0;
@@ -56,7 +54,7 @@ public class RainfallVisualiser extends Application {
                 maxRecordedRainfall = monthlyRainfallTotal;
             }
 
-//            alternate bar colours per year
+            // alternate bar colours per year
             if (month == 1) {
                 yearsGraphed++;
                 if (yearsGraphed % 2 == 0) {
@@ -98,10 +96,10 @@ public class RainfallVisualiser extends Application {
 
 
     public static void main(String[] args) {
-//        System.out.print("Enter path: ");
-//        var path = TextIO.getln();
+        System.out.print("Enter path: ");
+        var path = TextIO.getln();
 
-        var path = "resources/MountSheridanStationCNS_analysed.csv";
+//        var path = "resources/MountSheridanStationCNS_analysed.csv";
         TextIO.readFile(path);
         launch();
     }
