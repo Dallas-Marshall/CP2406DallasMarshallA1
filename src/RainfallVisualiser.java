@@ -34,7 +34,7 @@ public class RainfallVisualiser extends Application {
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, width - 25, X_AXIS_HEIGHT);
         g.strokeLine(startingValueX, X_AXIS_HEIGHT, startingValueX, 25);
         g.strokeText("Year", (width / 2.0), height - 10, 50);
-        g.strokeText("Rainfall (mL)", 10, (height / 2.0), 75);
+        g.strokeText("Rainfall (mm)", 10, (height / 2.0), 75);
         g.strokeText("Monthly Rainfall Totals per Year", (width / 2.0 - 30), 20, 200);
 
         TextIO.getln(); // ignore header record
